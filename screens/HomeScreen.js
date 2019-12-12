@@ -6,12 +6,21 @@ const HomeScreen = (props) => {
 const [listOfComics, setListOfComics] = useState([]);
 const [endOfList, setEndOfList] = useState(false);
 
-const fetchData = () => {
-     let comicNumber = 0;
+const theLastItem = () => {
+ return fetch(`http://xkcd.com/info.0.json`)
+    .then((resp) => {
+      return resp.json();
+    })
+    .then((respJson) => {
+      return respJson.num;
+    })
+}
+
+const fetchData = (comicNumber) => {
      let collectionOfComics = [];
      new Promise ((resolve, reject) => {
       for(let i = 0; i < 8; i++) {
-        comicNumber = 1 + i + listOfComics.length;
+        comicNumber = (comicNumber-(listOfComics.length === 0 ? listOfComics.length : listOfComics.length-1)) - i;
          
         fetch(`http://xkcd.com/${comicNumber}/info.0.json`)
         .then((resp) => {
@@ -36,8 +45,11 @@ const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
 };
 
 useEffect(() => {
-  if(listOfComics.length === 0 || endOfList === true){
-    fetchData();
+  if(listOfComics.length === 0 || endOfList === true) {
+    theLastItem()
+    .then((currentComicNumber) =>{
+      fetchData(currentComicNumber);
+    })
   }
 }), [listOfComics];
 
