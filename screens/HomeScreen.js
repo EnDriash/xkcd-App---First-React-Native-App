@@ -11,7 +11,7 @@ const fetchData = () => {
      let collectionOfComics = [];
      new Promise ((resolve, reject) => {
       for(let i = 0; i < 8; i++) {
-        comicNumber = Math.floor(Math.random() * 1000);
+        comicNumber = 1 + i + listOfComics.length;
          
         fetch(`http://xkcd.com/${comicNumber}/info.0.json`)
         .then((resp) => {
